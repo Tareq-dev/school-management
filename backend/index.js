@@ -1,19 +1,22 @@
 import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import routes from "./routes/routes.js";
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8000;
 
-// Basic GET API route
-app.get("/api/hello", (req, res) => {
-  res.json({ message: "Hello from the API!" });
-});
+app.use(cors());
+app.use(express.json());
 
-// Root route
+app.use("/api", routes);
+
 app.get("/", (req, res) => {
-  res.send("Welcome to the Express Server!");
+  res.send("📘 School Management API is running!");
 });
 
-// Start server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`🚀 Server running on http://localhost:${port}`);
 });

@@ -17,3 +17,5 @@ module.exports.allUser = async (req, res) => {
     res.status(200).json({ success: true, data: extractedData });
   });
 };
+
+ 
