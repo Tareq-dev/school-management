@@ -1,59 +1,19 @@
-const express = require("express");
+import express from "express";
+
 const app = express();
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const fileUpload = require("express-fileupload");
-const router = require("./routes/routes.js");
-const { client } = require("./config/whatsapp_config.js");
-const { ably } = require("./config/realtimeAbly.js");
-
-// http://localhost:3000
-//https://whatsbulk-self.vercel.app
-
-// url
-
-//I should be added env on vercel
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
-
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(fileUpload());
-app.use("/api", router);
-
 const port = process.env.PORT || 8000;
 
-const channel = ably.channels.get("scan");
-const channel1 = ably.channels.get("my-whatapp");
-const channel3 = ably.channels.get("user");
-
-client.on("qr", (qr) => {
-  channel.publish("qr", qr);
+// Basic GET API route
+app.get("/api/hello", (req, res) => {
+  res.json({ message: "Hello from the API!" });
 });
 
-client.on("ready", () => {
-  console.log("client is ready");
-  const user = {
-    user_number: client.info.me.user,
-    user_name: client.info.pushname,
-  };
-
-  channel1.publish("client-ready", "Client is ready!");
-  channel3.publish("user", user);
-});
-
-client.initialize();
-
+// Root route
 app.get("/", (req, res) => {
-  res.send("Hello World of whatsbulk");
+  res.send("Welcome to the Express Server!");
 });
 
+// Start server
 app.listen(port, () => {
-  console.log(`listening on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
