@@ -1,6 +1,6 @@
-const db = require("../config/db.js");
+import db from "../config/db.js";
 
-module.exports.allUser = async (req, res) => {
+exports.allUser = async (req, res) => {
   const query = "SELECT * FROM register";
   db.query(query, (error, results) => {
     if (error) {
