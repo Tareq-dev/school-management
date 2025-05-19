@@ -25,3 +25,42 @@ export const getStudentById = (req, res) => {
     res.status(200).json({ success: true, data: results[0] });
   });
 };
+
+
+export const createStudent = (req, res) => {
+  const {
+    student_id, name, class: studentClass, roll, gender, birth_date,
+    phone, email, address, guardian_name, guardian_phone, photo
+  } = req.body;
+
+  
+  if (
+    !student_id || !name || !studentClass || !roll || !gender || !birth_date ||
+    !phone || !email || !address || !guardian_name || !guardian_phone || !photo
+  ) {
+    return res.status(400).json({ error: 'All fields are required!' });
+  }
+
+
+  const sql = `INSERT INTO students 
+  (student_id, name, class, roll, gender, birth_date, phone, email, address, guardian_name, guardian_phone, photo)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(sql, [
+    student_id, name, studentClass, roll, gender, birth_date,
+    phone, email, address, guardian_name, guardian_phone, photo
+  ], (err, result) => {
+    if (err) {
+      console.error('Error inserting student:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.send({ message: 'Student added successfully!', studentId: result.insertId });
+    }
+  });
+}
+
+
+
+
+// Add Student API
+

@@ -1,0 +1,189 @@
+দারুণ! ভাই, MERN Stack-এ MongoDB বেশি কমন হলেও — MySQL-এও সুন্দরভাবে REST API বানানো যায়। তুমি যদি **Express + MySQL** ইউজ করো, তাহলে আমি তোমার জন্য **সেই অনুযায়ী Data Structure এবং Table Design সহ API লিস্ট** সাজিয়ে দিলাম।
+
+---
+
+## **School Management System: MySQL Database Table Structure & API প্ল্যান**
+
+---
+
+### **1️⃣ students টেবিল**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+student_id (VARCHAR)
+name (VARCHAR)
+class (VARCHAR)
+roll (INT)
+gender (VARCHAR)
+birth_date (DATE)
+phone (VARCHAR)
+email (VARCHAR)
+address (TEXT)
+guardian_name (VARCHAR)
+guardian_phone (VARCHAR)
+photo (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/students`
+* GET `/api/students`
+* GET `/api/students/:id`
+* PUT `/api/students/:id`
+* DELETE `/api/students/:id`
+
+---
+
+### **2️⃣ teachers টেবিল**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+teacher_id (VARCHAR)
+name (VARCHAR)
+designation (VARCHAR)
+subject (VARCHAR)
+email (VARCHAR)
+phone (VARCHAR)
+gender (VARCHAR)
+address (TEXT)
+joining_date (DATE)
+photo (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/teachers`
+* GET `/api/teachers`
+* GET `/api/teachers/:id`
+* PUT `/api/teachers/:id`
+* DELETE `/api/teachers/:id`
+
+---
+
+### **3️⃣ attendance টেবিল**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+date (DATE)
+student_id (VARCHAR)
+student_name (VARCHAR)
+class (VARCHAR)
+status (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/attendance`
+* GET `/api/attendance`
+* GET `/api/attendance/:student_id`
+
+---
+
+### **4️⃣ results টেবিল**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+student_id (VARCHAR)
+student_name (VARCHAR)
+class (VARCHAR)
+exam_name (VARCHAR)
+bangla (INT)
+english (INT)
+math (INT)
+total (INT)
+grade (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/results`
+* GET `/api/results`
+* GET `/api/results/:student_id`
+
+---
+
+### **5️⃣ notices টেবিল**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+title (VARCHAR)
+description (TEXT)
+date (DATE)
+type (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/notices`
+* GET `/api/notices`
+
+---
+
+### **6️⃣ routines টেবিল**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+class (VARCHAR)
+day (VARCHAR)
+subject (VARCHAR)
+teacher_name (VARCHAR)
+time (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/routines`
+* GET `/api/routines/:class`
+
+---
+
+### **7️⃣ users টেবিল (Login System)**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+username (VARCHAR)
+email (VARCHAR)
+password (VARCHAR) -- hashed
+role (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/register`
+* POST `/api/login` (JWT token)
+
+---
+
+### **(অপশনাল)** **payments টেবিল**
+
+```sql
+id (INT, PRIMARY KEY, AUTO_INCREMENT)
+student_id (VARCHAR)
+student_name (VARCHAR)
+month (VARCHAR)
+amount (DECIMAL)
+payment_date (DATE)
+status (VARCHAR)
+```
+
+**API:**
+
+* POST `/api/payments`
+* GET `/api/payments`
+* GET `/api/payments/:student_id`
+
+---
+
+## **টেক স্ট্যাক:**
+
+* Node.js + Express
+* MySQL (with mysql2 npm package)
+* JWT for authentication
+* bcrypt for password hashing
+
+---
+
+## **চাইলে এগুলোর জন্য আলাদা আলাদা Controller function, Router ও SQL Query করে কোড লিখে দিতে পারবো। বলো চাইলে!**
+
+তাহলে তোমার টাইম বাঁচবে আর একদম রেডি কোড থাকবে।
+**বলো করবো কি ভাই?**
