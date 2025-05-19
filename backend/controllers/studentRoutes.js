@@ -25,7 +25,6 @@ export const getStudentById = (req, res) => {
     res.status(200).json({ success: true, data: results[0] });
   });
 };
-
 // Add Student API
 export const createStudent = (req, res) => {
   const {
@@ -109,7 +108,6 @@ export const updateStudents = (req, res) => {
 
   });
 }
-
 // Delete Student
 
 export const deleteStudent =(req, res)=>{
