@@ -10,7 +10,6 @@ export const getAllteachers = (req, res) => {
         res.status(200).json({ success: true, data: results });
     });
 };
-
 export const getTeacherById = (req, res) => {
     const { id } = req.params;
     const query = "SELECT * FROM teachers WHERE id = ?";
@@ -25,8 +24,6 @@ export const getTeacherById = (req, res) => {
         res.status(200).json({ success: true, data: results[0] });
     });
 };
-
-
 // // Add Student API
 export const createTeacher = (req, res) => {
     const {
@@ -57,8 +54,6 @@ export const createTeacher = (req, res) => {
         }
     });
 }
-
-
 // // Update Student API
 
 export const updateTeacher = (req, res) => {
@@ -106,9 +101,7 @@ export const updateTeacher = (req, res) => {
     });
   });
 };
-
 // // Delete Student
-
 export const deleteTeacher =(req, res)=>{
   const sql = `DELETE FROM teachers WHERE id = ?`;
   db.query(sql, [req.params.id], (err, result) => {

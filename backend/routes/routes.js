@@ -1,6 +1,7 @@
 import express from "express";
 import { getAllStudents, getStudentById, createStudent, updateStudents, deleteStudent } from "../controllers/studentRoutes.js";
 import { createTeacher, deleteTeacher, getAllteachers, getTeacherById, updateTeacher } from "../controllers/teacherRoutes.js";
+import { attendanceData, getAttendanceDataByDate, getAttendanceDataByMonth } from "../controllers/attendanceRoute.js";
 
 const router = express.Router();
 
@@ -18,7 +19,11 @@ router.put("/teacher/:id", updateTeacher)
 router.post('/teacher', createTeacher);
 router.delete("/teacher/:id", deleteTeacher);
 
-
+//attendance Routes
+router.get('/attendance', getAttendanceDataByMonth);
+router.get('/attendance/monthly', getAttendanceDataByDate);
+router.post('/attendance', attendanceData);
+ 
 
 
 export default router;
