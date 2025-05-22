@@ -9,9 +9,9 @@ export const getAllClasses = (req, res) => {
 };
 
 export const getClassById = (req, res) => {
-  const { class:classNum } = req.params;
-  const query = "SELECT * FROM classes WHERE name = ?";
-  db.query(query, [classNum], (err, results) => {
+  const { id } = req.params;
+  const query = "SELECT * FROM classes WHERE id = ?";
+  db.query(query, [id], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
     if (results.length === 0) return res.status(404).json({ success: false, message: "Class not found" });
     res.status(200).json({ success: true, data: results[0] });

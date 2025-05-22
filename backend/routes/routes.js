@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get('/classes', getAllClasses);
 router.post('/classes', addClass);
-router.get('/classes/:class', getClassById);
+router.get('/classes/:id', getClassById);
 router.put('/classes/:id', updateClass); 
 // you have to pass id according to class, but for the editing class you have to write Ex. (Class 8) 
 router.delete('/classes/:id', deleteClass);
