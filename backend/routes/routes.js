@@ -2,8 +2,19 @@ import express from "express";
 import { getAllStudents, getStudentById, createStudent, updateStudents, deleteStudent } from "../controllers/studentRoutes.js";
 import { createTeacher, deleteTeacher, getAllteachers, getTeacherById, updateTeacher } from "../controllers/teacherRoutes.js";
 import { attendanceData, getAllAttendance, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, updateAttendance } from "../controllers/attendanceRoute.js";
+import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
 
 const router = express.Router();
+
+//Class
+
+router.get('/classes', getAllClasses);
+router.post('/classes', addClass);
+router.get('/classes/:class', getClassById);
+router.put('/classes/:id', updateClass); 
+// you have to pass id according to class, but for the editing class you have to write Ex. (Class 8) 
+router.delete('/classes/:id', deleteClass);
+
 
 //Students Route
 router.get("/students", getAllStudents);
