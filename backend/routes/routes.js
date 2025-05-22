@@ -3,18 +3,23 @@ import { getAllStudents, getStudentById, createStudent, updateStudents, deleteSt
 import { createTeacher, deleteTeacher, getAllteachers, getTeacherById, updateTeacher } from "../controllers/teacherRoutes.js";
 import { attendanceData, getAllAttendance, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, updateAttendance } from "../controllers/attendanceRoute.js";
 import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
+import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_controllers/sessionController.js";
 
 const router = express.Router();
 
 //Class
-
 router.get('/classes', getAllClasses);
 router.post('/classes', addClass);
 router.get('/classes/:id', getClassById);
-router.put('/classes/:id', updateClass); 
-// you have to pass id according to class, but for the editing class you have to write Ex. (Class 8) 
+router.put('/classes/:id', updateClass);
 router.delete('/classes/:id', deleteClass);
 
+//Session
+router.get('/session', getAllSession);
+router.post('/session', addSession);
+router.get('/session/:id', getSessionById);
+router.put('/session/:id', updateSession);
+router.delete('/session/:id', deleteSession);
 
 //Students Route
 router.get("/students", getAllStudents);
@@ -39,7 +44,7 @@ router.put('/attendance/:id', updateAttendance); //PUT http://localhost:8000/api
 
 // router.get('/attendance/yearly', getAttendanceDataByYear); //GET http://localhost:5000/api/attendance/yearly?className=Class 5&year=2025
 
- 
+
 
 
 export default router;

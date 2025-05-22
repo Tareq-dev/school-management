@@ -20,12 +20,26 @@ export const getClassById = (req, res) => {
 
 export const addClass = (req, res) => {
   const { name } = req.body;
-  const query = "INSERT INTO classes (name) VALUES (?)";
-  db.query(query, [name], (err) => {
+
+  // Check if class already exists
+  const checkQuery = "SELECT * FROM classes WHERE name = ?";
+  db.query(checkQuery, [name], (err, result) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
-    res.status(201).json({ success: true, message: "Class added!" });
+
+    if (result.length > 0) {
+      // Class already exists
+      return res.status(409).json({ success: false, message: "Class already added!" });
+    } else {
+      // If not exists, then insert
+      const insertQuery = "INSERT INTO classes (name) VALUES (?)";
+      db.query(insertQuery, [name], (err) => {
+        if (err) return res.status(500).json({ success: false, message: "DB Error" });
+        res.status(201).json({ success: true, message: "Class added!" });
+      });
+    }
   });
 };
+
 
 export const updateClass = (req, res) => {
   const { id } = req.params;

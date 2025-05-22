@@ -19,19 +19,33 @@ export const getSessionById = (req, res) => {
 };
 
 export const addSession = (req, res) => {
-  const { id } = req.body;
-  const query = "INSERT INTO sessions (year) VALUES (?)";
-  db.query(query, [id], (err) => {
+  const { year } = req.body;
+
+  // Check if session already exists
+  const checkQuery = "SELECT * FROM sessions WHERE year = ?";
+  db.query(checkQuery, [year], (err, result) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
-    res.status(201).json({ success: true, message: "Session added!" });
+
+    if (result.length > 0) {
+      // Session already exists
+      return res.status(409).json({ success: false, message: "Session already added!" });
+    } else {
+      // If not exists, then insert
+      const insertQuery = "INSERT INTO sessions (year) VALUES (?)";
+      db.query(insertQuery, [year], (err) => {
+        if (err) return res.status(500).json({ success: false, message: "DB Error" });
+        res.status(201).json({ success: true, message: "Session added!" });
+      });
+    }
   });
 };
 
+
 export const updateSession = (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
-  const query = "UPDATE sessions SET name = ? WHERE id = ?";
-  db.query(query, [name, id], (err) => {
+  const { year } = req.body;
+  const query = "UPDATE sessions SET year = ? WHERE id = ?";
+  db.query(query, [year, id], (err) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
     res.status(200).json({ success: true, message: "Session updated!" });
   });
