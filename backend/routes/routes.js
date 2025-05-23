@@ -9,6 +9,7 @@ import { addExam, deleteExam, getAllExam, getExamById, updateExam } from "../con
 import { addShift, deleteShift, getAllShift, getShiftById, updateShift } from "../controllers/setup_controllers/shiftController.js";
 import { addSubject, deleteSubject, getAllSubject, getSubjectById, updateSubject } from "../controllers/setup_controllers/subjectController.js";
 import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_CategotyById, updateFee_Categoty } from "../controllers/setup_controllers/feeCategoryController.js";
+import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, updateFeeAmount } from "../controllers/setup_controllers/feeAmountController.js";
 
 const router = express.Router();
 
@@ -60,6 +61,15 @@ router.post('/fee_categories', addFee_Categoty);
 router.get('/fee_categories/:id', getFee_CategotyById);
 router.put('/fee_categories/:id', updateFee_Categoty);
 router.delete('/fee_categories/:id', deleteFee_Categoty);
+
+// Fee Amount
+router.post('/fee-amounts', createFeeAmount);
+router.get('/fee-amounts', getFeeAmounts);
+router.get('/fee-amounts/:id', getFeeAmountById);
+router.put('/fee-amounts/:id', updateFeeAmount);
+router.delete('/fee-amounts/:id', deleteFeeAmount);
+
+
 
 //Students Route
 router.get("/students", getAllStudents);
