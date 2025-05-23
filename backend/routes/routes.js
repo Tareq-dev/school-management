@@ -10,6 +10,7 @@ import { addShift, deleteShift, getAllShift, getShiftById, updateShift } from ".
 import { addSubject, deleteSubject, getAllSubject, getSubjectById, updateSubject } from "../controllers/setup_controllers/subjectController.js";
 import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_CategotyById, updateFee_Categoty } from "../controllers/setup_controllers/feeCategoryController.js";
 import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, updateFeeAmount } from "../controllers/setup_controllers/feeAmountController.js";
+import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_controllers/subjectAssignController.js";
 
 const router = express.Router();
 
@@ -68,6 +69,12 @@ router.get('/fee-amounts', getFeeAmounts);
 router.get('/fee-amounts/:id', getFeeAmountById);
 router.put('/fee-amounts/:id', updateFeeAmount);
 router.delete('/fee-amounts/:id', deleteFeeAmount);
+
+
+// Subjcet Assign
+router.get('/subject-assignments', getAllAssignments);
+router.post('/subject-assignments', assignSubject);
+router.put('/subject-assignments/:id', updateAssignment);
 
 
 
