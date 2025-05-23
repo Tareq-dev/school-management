@@ -7,6 +7,8 @@ import { addSession, deleteSession, getAllSession, getSessionById, updateSession
 import { addGroup, deleteGroup, getAllGroup, getGroupById, updateGroup } from "../controllers/setup_controllers/groupController.js";
 import { addExam, deleteExam, getAllExam, getExamById, updateExam } from "../controllers/setup_controllers/examTypeController.js";
 import { addShift, deleteShift, getAllShift, getShiftById, updateShift } from "../controllers/setup_controllers/shiftController.js";
+import { addSubject, deleteSubject, getAllSubject, getSubjectById, updateSubject } from "../controllers/setup_controllers/subjectController.js";
+import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_CategotyById, updateFee_Categoty } from "../controllers/setup_controllers/feeCategoryController.js";
 
 const router = express.Router();
 
@@ -38,12 +40,26 @@ router.get('/exam/:id', getExamById);
 router.put('/exam/:id', updateExam);
 router.delete('/exam/:id', deleteExam);
 
-//Exam
+//Shift
 router.get('/shift', getAllShift);
 router.post('/shift', addShift);
 router.get('/shift/:id', getShiftById);
 router.put('/shift/:id', updateShift);
 router.delete('/shift/:id', deleteShift);
+
+//Subject
+router.get('/subject', getAllSubject);
+router.post('/subject', addSubject);
+router.get('/subject/:id', getSubjectById);
+router.put('/subject/:id', updateSubject);
+router.delete('/subject/:id', deleteSubject);
+
+//Fee_Categoty
+router.get('/fee_categories', getAllFee_Categoty);
+router.post('/fee_categories', addFee_Categoty);
+router.get('/fee_categories/:id', getFee_CategotyById);
+router.put('/fee_categories/:id', updateFee_Categoty);
+router.delete('/fee_categories/:id', deleteFee_Categoty);
 
 //Students Route
 router.get("/students", getAllStudents);
