@@ -1,60 +1,60 @@
 import db from '../../config/db.js';
 
-export const getAllSession = (req, res) => {
-  const query = "SELECT * FROM sessions";
+export const getAllGroup = (req, res) => {
+  const query = "SELECT * FROM groups";
   db.query(query, (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
     res.status(200).json({ success: true, data: results });
   });
 };
 
-export const getSessionById = (req, res) => {
+export const getGroupById = (req, res) => {
   const { id } = req.params;
-  const query = "SELECT * FROM sessions WHERE id = ?";
+  const query = "SELECT * FROM groups WHERE id = ?";
   db.query(query, [id], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
-    if (results.length === 0) return res.status(404).json({ success: false, message: "Session not found" });
+    if (results.length === 0) return res.status(404).json({ success: false, message: "Group not found" });
     res.status(200).json({ success: true, data: results[0] });
   });
 };
 
-export const addSession = (req, res) => {
-  const { year } = req.body;
+export const addGroup = (req, res) => {
+  const { name } = req.body;
 
-  // Check if session already exists
-  const checkQuery = "SELECT * FROM sessions WHERE year = ?";
-  db.query(checkQuery, [year], (err, result) => {
+  // Check if Group already exists
+  const checkQuery = "SELECT * FROM Groups WHERE name = ?";
+  db.query(checkQuery, [name], (err, result) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
 
     if (result.length > 0) {
-      // Session already exists
-      return res.status(409).json({ success: false, message: "Session already added!" });
+      // Group already exists
+      return res.status(409).json({ success: false, message: "Group already added!" });
     } else {
       // If not exists, then insert
-      const insertQuery = "INSERT INTO sessions (year) VALUES (?)";
-      db.query(insertQuery, [year], (err) => {
+      const insertQuery = "INSERT INTO groups (name) VALUES (?)";
+      db.query(insertQuery, [name], (err) => {
         if (err) return res.status(500).json({ success: false, message: "DB Error" });
-        res.status(201).json({ success: true, message: "Session added!" });
+        res.status(201).json({ success: true, message: "Group added!" });
       });
     }
   });
 };
 
-export const updateSession = (req, res) => {
+export const updateGroup = (req, res) => {
   const { id } = req.params;
-  const { year } = req.body;
-  const query = "UPDATE sessions SET year = ? WHERE id = ?";
-  db.query(query, [year, id], (err) => {
+  const { name } = req.body;
+  const query = "UPDATE Groups SET name = ? WHERE id = ?";
+  db.query(query, [name, id], (err) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
-    res.status(200).json({ success: true, message: "Session updated!" });
+    res.status(200).json({ success: true, message: "Group updated!" });
   });
 };
 
-export const deleteSession = (req, res) => {
+export const deleteGroup = (req, res) => {
   const { id } = req.params;
-  const query = "DELETE FROM sessions WHERE id = ?";
+  const query = "DELETE FROM groups WHERE id = ?";
   db.query(query, [id], (err) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error" });
-    res.status(200).json({ success: true, message: "Session deleted!" });
+    res.status(200).json({ success: true, message: "Group deleted!" });
   });
 };

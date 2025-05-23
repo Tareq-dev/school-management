@@ -4,6 +4,7 @@ import { createTeacher, deleteTeacher, getAllteachers, getTeacherById, updateTea
 import { attendanceData, getAllAttendance, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, updateAttendance } from "../controllers/attendanceRoute.js";
 import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
 import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_controllers/sessionController.js";
+import { addGroup, deleteGroup, getAllGroup, getGroupById, updateGroup } from "../controllers/setup_controllers/groupController.js";
 
 const router = express.Router();
 
@@ -20,6 +21,14 @@ router.post('/session', addSession);
 router.get('/session/:id', getSessionById);
 router.put('/session/:id', updateSession);
 router.delete('/session/:id', deleteSession);
+
+
+//Group
+router.get('/group', getAllGroup);
+router.post('/group', addGroup);
+router.get('/group/:id', getGroupById);
+router.put('/group/:id', updateGroup);
+router.delete('/group/:id', deleteGroup);
 
 //Students Route
 router.get("/students", getAllStudents);
