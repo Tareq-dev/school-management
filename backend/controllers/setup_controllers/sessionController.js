@@ -40,7 +40,6 @@ export const addSession = (req, res) => {
   });
 };
 
-
 export const updateSession = (req, res) => {
   const { id } = req.params;
   const { year } = req.body;
