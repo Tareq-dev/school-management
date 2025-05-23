@@ -6,6 +6,7 @@ import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from 
 import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_controllers/sessionController.js";
 import { addGroup, deleteGroup, getAllGroup, getGroupById, updateGroup } from "../controllers/setup_controllers/groupController.js";
 import { addExam, deleteExam, getAllExam, getExamById, updateExam } from "../controllers/setup_controllers/examTypeController.js";
+import { addShift, deleteShift, getAllShift, getShiftById, updateShift } from "../controllers/setup_controllers/shiftController.js";
 
 const router = express.Router();
 
@@ -36,6 +37,13 @@ router.post('/exam', addExam);
 router.get('/exam/:id', getExamById);
 router.put('/exam/:id', updateExam);
 router.delete('/exam/:id', deleteExam);
+
+//Exam
+router.get('/shift', getAllShift);
+router.post('/shift', addShift);
+router.get('/shift/:id', getShiftById);
+router.put('/shift/:id', updateShift);
+router.delete('/shift/:id', deleteShift);
 
 //Students Route
 router.get("/students", getAllStudents);
