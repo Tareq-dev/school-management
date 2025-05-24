@@ -186,14 +186,12 @@ export const updateStudentRegistration = async (req, res) => {
 
         // পুরানো ছবি ফাইল ডিলিট
         const oldPhotoPath = path.resolve('public/uploads/students_photo', oldData.photo);
-console.log(req.file)
-       
+        
         if (fs.existsSync(oldPhotoPath)) {
           fs.unlinkSync(oldPhotoPath);
         }
         // নতুন ছবির ফাইল নাম
         const fileName = `${name.split(" ")[0]}_c_${studentClass}_r_${roll}.jpg`;
-        console.log("New Photo Url", fileName)
         const dir = path.resolve('public/uploads/students_photo');
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });
