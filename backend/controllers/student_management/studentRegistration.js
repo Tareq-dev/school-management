@@ -29,6 +29,7 @@ export const getStudentRegistrationById = (req, res) => {
     res.status(200).json({ success: true, data: results[0] });
   });
 };
+
 // Add Student API
 export const createStudentRegistration = async (req, res) => {
   const {
@@ -55,7 +56,7 @@ export const createStudentRegistration = async (req, res) => {
   }
 
   try {
-    const fileName = `${name}_class_${studentClass}_roll_${roll}.jpg`;
+    const fileName = `${name.split(" ")[0]}_c_${studentClass}_r_${roll}.jpg`;
 
     // Absolute dir path
     const dir = path.resolve("public/uploads/students_photo");
@@ -91,12 +92,66 @@ export const createStudentRegistration = async (req, res) => {
 }
 
 // Update Student API
-export const updateStudentRegistration = (req, res) => {
+// export const updateStudentRegistration = (req, res) => {
+//   const id = req.params.id;
+
+//   // আগে পুরানো ডাটা আনবো
+//   const selectSql = `SELECT * FROM students_registration WHERE id = ?`;
+//   db.query(selectSql, [id], (err, results) => {
+//     if (err) {
+//       console.error('Error fetching student:', err);
+//       return res.status(500).send('Server error');
+//     }
+//     if (results.length === 0) {
+//       return res.status(404).send('Student not found');
+//     }
+
+//     const oldData = results[0];
+
+//     const {
+//       student_id = oldData.student_id,
+//       name = oldData.name,
+//       class: studentClass = oldData.class,
+//       roll = oldData.roll,
+//       gender = oldData.gender,
+//       birth_date = oldData.birth_date,
+//       phone = oldData.phone,
+//       email = oldData.email,
+//       address = oldData.address,
+//       guardian_name = oldData.guardian_name,
+//       guardian_phone = oldData.guardian_phone,
+//       photo = oldData.photo,
+//       session = oldData.session,
+//       shift = oldData.shift,
+//       discounts = oldData.discounts
+//     } = req.body;
+
+//     // // Update
+//     const updateSql = `UPDATE students_registration SET
+//       student_id = ?, name = ?, class = ?, roll = ?, gender = ?, birth_date = ?, 
+//       phone = ?, email = ?, address = ?, guardian_name = ?, guardian_phone = ?, photo = ?, session =?, shift=? , discounts = ? 
+//       WHERE id = ?`;
+
+//     db.query(updateSql, [
+//       student_id, name, studentClass, roll, gender, birth_date,
+//       phone, email, address, guardian_name, guardian_phone, photo, id, session, shift, discounts
+//     ], (err, result) => {
+//       if (err) {
+//         console.error('Error updating student:', err);
+//         return res.status(500).send('Server error');
+//       }
+//       res.send({ message: 'Student updated successfully!' });
+//     });
+
+//   });
+// }
+
+export const updateStudentRegistration = async (req, res) => {
   const id = req.params.id;
 
-  // আগে পুরানো ডাটা আনবো
+  // পুরানো ডাটা আনবো
   const selectSql = `SELECT * FROM students_registration WHERE id = ?`;
-  db.query(selectSql, [id], (err, results) => {
+  db.query(selectSql, [id], async (err, results) => {
     if (err) {
       console.error('Error fetching student:', err);
       return res.status(500).send('Server error');
@@ -107,6 +162,7 @@ export const updateStudentRegistration = (req, res) => {
 
     const oldData = results[0];
 
+    // req.body থেকে update data নেবে, না থাকলে পুরানো ডাটা দিবে
     const {
       student_id = oldData.student_id,
       name = oldData.name,
@@ -119,31 +175,64 @@ export const updateStudentRegistration = (req, res) => {
       address = oldData.address,
       guardian_name = oldData.guardian_name,
       guardian_phone = oldData.guardian_phone,
-      photo = oldData.photo,
       session = oldData.session,
       shift = oldData.shift,
-      discounts = oldData.discounts
+      discounts = oldData.discounts,
     } = req.body;
+    try {
+      let photo = oldData.photo;
+      // যদি নতুন ছবি আসে, তাহলে আগেরটা ডিলিট করে নতুনটা save করবো
+      if (req.file) {
 
-    // // Update
-    const updateSql = `UPDATE students_registration SET
-      student_id = ?, name = ?, class = ?, roll = ?, gender = ?, birth_date = ?, 
-      phone = ?, email = ?, address = ?, guardian_name = ?, guardian_phone = ?, photo = ?, session =?, shift=? , discounts = ? 
-      WHERE id = ?`;
+        // পুরানো ছবি ফাইল ডিলিট
+        const oldPhotoPath = path.resolve('public/uploads/students_photo', oldData.photo);
+console.log(req.file)
+       
+        if (fs.existsSync(oldPhotoPath)) {
+          fs.unlinkSync(oldPhotoPath);
+        }
+        // নতুন ছবির ফাইল নাম
+        const fileName = `${name.split(" ")[0]}_c_${studentClass}_r_${roll}.jpg`;
+        console.log("New Photo Url", fileName)
+        const dir = path.resolve('public/uploads/students_photo');
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
 
-    db.query(updateSql, [
-      student_id, name, studentClass, roll, gender, birth_date,
-      phone, email, address, guardian_name, guardian_phone, photo, id, session, shift, discounts
-    ], (err, result) => {
-      if (err) {
-        console.error('Error updating student:', err);
-        return res.status(500).send('Server error');
+        const uploadPath = path.join(dir, fileName);
+
+        await sharp(req.file.buffer)
+          .resize({ width: 800 })
+          .jpeg({ quality: 70 })
+          .toFile(uploadPath);
+
+        photo = fileName;
       }
-      res.send({ message: 'Student updated successfully!' });
-    });
 
+      // Update query
+      const updateSql = `UPDATE students_registration SET
+        student_id = ?, name = ?, class = ?, roll = ?, gender = ?, birth_date = ?, 
+        phone = ?, email = ?, address = ?, guardian_name = ?, guardian_phone = ?, photo = ?, session = ?, shift = ?, discounts = ?
+        WHERE id = ?`;
+
+      db.query(updateSql, [
+        student_id, name, studentClass, roll, gender, birth_date,
+        phone, email, address, guardian_name, guardian_phone, photo, session, shift, discounts,
+        id
+      ], (err, result) => {
+        if (err) {
+          console.error('Error updating student:', err);
+          return res.status(500).send('Server error');
+        }
+        res.send({ message: 'Student updated successfully!' });
+      });
+
+    } catch (error) {
+      console.error('Image processing error:', error);
+      res.status(500).json({ error: 'Image upload/update failed!' });
+    }
   });
-}
+};
 // Delete Student
 
 export const deleteStudentRegistration = (req, res) => {

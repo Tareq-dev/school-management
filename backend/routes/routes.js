@@ -83,7 +83,7 @@ router.put('/subject-assignments/:id', updateAssignment);
 router.get("/students", getAllStudentRegistrations);
 router.get("/student/:id", getStudentRegistrationById);
 router.post('/students',upload.single("photo"), createStudentRegistration);
-router.put('/student/:id', updateStudentRegistration);
+router.put('/student/:id',upload.single("photo"), updateStudentRegistration);
 router.delete('/student/:id', deleteStudentRegistration);
 
 //teachers Routes
