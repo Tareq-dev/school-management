@@ -7,6 +7,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8000;
+app.use('/uploads', express.static('public/uploads'));
 
 app.get("/", (req, res) => {
   res.send("Welcome to the API!");

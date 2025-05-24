@@ -11,6 +11,7 @@ import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_Categot
 import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, updateFeeAmount } from "../controllers/setup_controllers/feeAmountController.js";
 import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_controllers/subjectAssignController.js";
 import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegistrations, getStudentRegistrationById, updateStudentRegistration } from "../controllers/student_management/studentRegistration.js";
+import { upload } from "../config/upload.js";
 
 const router = express.Router();
 
@@ -81,7 +82,7 @@ router.put('/subject-assignments/:id', updateAssignment);
 //Students Registration
 router.get("/students", getAllStudentRegistrations);
 router.get("/student/:id", getStudentRegistrationById);
-router.post('/students', createStudentRegistration);
+router.post('/students',upload.single("photo"), createStudentRegistration);
 router.put('/student/:id', updateStudentRegistration);
 router.delete('/student/:id', deleteStudentRegistration);
 

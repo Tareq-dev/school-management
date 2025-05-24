@@ -33,52 +33,44 @@ export const getStudentRegistrationById = (req, res) => {
 export const createStudentRegistration = async (req, res) => {
   const {
     student_id, name, class: studentClass, roll, gender, birth_date,
-    phone, email, address, guardian_name, guardian_phone, photo, session, shift, discounts
+    phone, email, address, guardian_name, guardian_phone, session, shift, discounts
   } = req.body;
 
   if (
     !student_id || !name || !studentClass || !roll || !gender || !birth_date ||
-    !phone || !email || !address || !guardian_name || !guardian_phone || !photo || !session || !shift ||
+    !phone || !email || !address || !guardian_name || !guardian_phone || !session || !shift ||
     discounts === undefined || discounts === null
   ) {
     return res.status(400).json({ error: 'All fields are required!' });
   }
 
-  // const sql = `INSERT INTO students_registration 
-  // (student_id, name, class, roll, gender, birth_date, phone, email, address, guardian_name, guardian_phone, photo, session, shift, discounts)
-  // VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO students_registration 
+  (student_id, name, class, roll, gender, birth_date, phone, email, address, guardian_name, guardian_phone, photo, session, shift, discounts)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-  // db.query(sql, [
-  //   student_id, name, studentClass, roll, gender, birth_date,
-  //   phone, email, address, guardian_name, guardian_phone, photo, session, shift, discounts
-  // ], (err, result) => {
-  //   if (err) {
-  //     console.error('Error inserting student:', err);
-  //     res.status(500).send('Server error');
-  //   } else {
-  //     res.send({ message: 'Student added successfully!', studentId: result.insertId });
-  //   }
-  // });
-  // Photo check
+
+  //Photo check
   if (!req.file) {
     return res.status(400).json({ error: "Photo is required!" });
   }
 
   try {
-    // Unique file name
-    const fileName = `student_${Date.now()}.jpg`;
+    const fileName = `${name}_class_${studentClass}_roll_${roll}.jpg`;
 
-    // Compress and save image
-    const uploadPath = path.join("public/uploads", fileName);
+    // Absolute dir path
+    const dir = path.resolve("public/uploads/students_photo");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    // Absolute upload path
+    const uploadPath = path.join(dir, fileName);
+
+    // Compress and save
     await sharp(req.file.buffer)
-      .resize({ width: 800 })      // Optional: image width resize
-      .jpeg({ quality: 70 })       // Compress quality 0-100
+      .resize({ width: 800 })
+      .jpeg({ quality: 70 })
       .toFile(uploadPath);
-
-    // Now insert into DB
-    const sql = `INSERT INTO students_registration 
-    (student_id, name, class, roll, gender, birth_date, phone, email, address, guardian_name, guardian_phone, photo, session, shift, discounts)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(sql, [
       student_id, name, studentClass, roll, gender, birth_date,
@@ -86,7 +78,7 @@ export const createStudentRegistration = async (req, res) => {
     ], (err, result) => {
       if (err) {
         console.error('Error inserting student:', err);
-        return res.status(500).send('Server error');
+        res.status(500).send('Server error');
       } else {
         res.send({ message: 'Student added successfully!', studentId: result.insertId });
       }
