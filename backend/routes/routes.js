@@ -1,5 +1,4 @@
 import express from "express";
-import { getAllStudents, getStudentById, createStudent, updateStudents, deleteStudent } from "../controllers/studentRoutes.js";
 import { createTeacher, deleteTeacher, getAllteachers, getTeacherById, updateTeacher } from "../controllers/teacherRoutes.js";
 import { attendanceData, getAllAttendance, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, updateAttendance } from "../controllers/attendanceRoute.js";
 import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
@@ -11,6 +10,7 @@ import { addSubject, deleteSubject, getAllSubject, getSubjectById, updateSubject
 import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_CategotyById, updateFee_Categoty } from "../controllers/setup_controllers/feeCategoryController.js";
 import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, updateFeeAmount } from "../controllers/setup_controllers/feeAmountController.js";
 import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_controllers/subjectAssignController.js";
+import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegistrations, getStudentRegistrationById, updateStudentRegistration } from "../controllers/student_management/studentRegistration.js";
 
 const router = express.Router();
 
@@ -78,12 +78,12 @@ router.put('/subject-assignments/:id', updateAssignment);
 
 
 
-//Students Route
-router.get("/students", getAllStudents);
-router.get("/student/:id", getStudentById);
-router.post('/student', createStudent);
-router.put('/student/:id', updateStudents);
-router.delete('/student/:id', deleteStudent);
+//Students Registration
+router.get("/students", getAllStudentRegistrations);
+router.get("/student/:id", getStudentRegistrationById);
+router.post('/students', createStudentRegistration);
+router.put('/student/:id', updateStudentRegistration);
+router.delete('/student/:id', deleteStudentRegistration);
 
 //teachers Routes
 router.get("/teachers", getAllteachers)
