@@ -12,6 +12,7 @@ import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, upda
 import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_controllers/subjectAssignController.js";
 import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegistrations, getStudentRegistrationById, updateStudentRegistration } from "../controllers/student_management/studentRegistration.js";
 import { upload } from "../config/upload.js";
+import { assignRolls, getStudentsForRoll } from "../controllers/student_management/roll_generate.js";
 
 const router = express.Router();
 
@@ -77,14 +78,17 @@ router.get('/subject-assignments', getAllAssignments);
 router.post('/subject-assignments', assignSubject);
 router.put('/subject-assignments/:id', updateAssignment);
 
-
-
 //Students Registration
 router.get("/students", getAllStudentRegistrations);
 router.get("/student/:id", getStudentRegistrationById);
 router.post('/students',upload.single("photo"), createStudentRegistration);
 router.put('/student/:id',upload.single("photo"), updateStudentRegistration);
 router.delete('/student/:id', deleteStudentRegistration);
+
+//Roll Assing
+router.get('/roll-generate',getStudentsForRoll)
+router.post('/roll-assign',assignRolls)
+
 
 //teachers Routes
 router.get("/teachers", getAllteachers)
@@ -99,6 +103,8 @@ router.get('/attendance/monthly', getAttendanceDataByMonth);
 router.get('/all-attendance', getAllAttendance);
 router.post('/attendance', attendanceData);
 router.put('/attendance/:id', updateAttendance); //PUT http://localhost:8000/api/attendance/1
+
+
 
 // router.get('/attendance/yearly', getAttendanceDataByYear); //GET http://localhost:5000/api/attendance/yearly?className=Class 5&year=2025
 
