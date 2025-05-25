@@ -13,6 +13,7 @@ import { assignSubject, getAllAssignments, updateAssignment } from "../controlle
 import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegistrations, getStudentRegistrationById, updateStudentRegistration } from "../controllers/student_management/studentRegistration.js";
 import { upload } from "../config/upload.js";
 import { assignRolls, getStudentsForRoll } from "../controllers/student_management/roll_generate.js";
+import { getRegistrationFees } from "../controllers/student_management/registration_fee.js";
 
 const router = express.Router();
 
@@ -89,6 +90,8 @@ router.delete('/student/:id', deleteStudentRegistration);
 router.get('/roll-generate',getStudentsForRoll)
 router.post('/roll-assign',assignRolls)
 
+//Registration Fees
+router.get('/registration-fee',getRegistrationFees)
 
 //teachers Routes
 router.get("/teachers", getAllteachers)
