@@ -2,7 +2,7 @@ import db from "../../config/db.js";
 
 export const getRegistrationFees = (req, res) => {
     const { class: class_id, feeCategory } = req.query;
-    console.log(class_id, feeCategory )
+   
     if (!feeCategory || !class_id) {
         return res.status(400).json({ success: false, message: "fee Category and Class are required" });
     }
@@ -16,11 +16,10 @@ export const getRegistrationFees = (req, res) => {
 
         const feeAmount = feeResult[0].amount;
         // 2. Get students list
-        const studentQuery = `SELECT id, student_id, name, roll, discounts FROM students_management WHERE session = ? AND class = ? ORDER BY roll`;
+        const studentQuery = `SELECT id, student_id, name, roll, discounts FROM students_registration WHERE class = ? ORDER BY roll`;
 
-        db.query(studentQuery, [session, class_id], (stuErr, stuResults) => {
+        db.query(studentQuery, [class_id], (stuErr, stuResults) => {
             if (stuErr) return res.status(500).json({ success: false, message: "DB error on student fetch" });
-
             // 3. Prepare data with discounted fee
             const finalData = stuResults.map(student => {
                 const discount = student.discounts || 0;
