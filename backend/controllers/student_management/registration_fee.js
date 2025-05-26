@@ -70,7 +70,7 @@ export const generateRegistrationSlip = (req, res) => {
         doc.pipe(fs.createWriteStream(filePath));
         // const schoolName = "Bright Future Academy";
         // const schoolAddress = "123, Education Road, Dhaka, Bangladesh";
-       function drawCopy(startY, copyTitle) {
+        function drawCopy(startY, copyTitle) {
   // Header
   doc
     .fontSize(14)
