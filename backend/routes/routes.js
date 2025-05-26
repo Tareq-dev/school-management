@@ -98,8 +98,8 @@ router.get('/generate-slip/:id',generateSlip)
 //teachers Routes
 router.get("/employees", getAllEmployees)
 router.get("/employee/:id", getEmployeeById)
-router.put("/employee/:id", updateEmployee)
-router.post('/employee', createEmployee);
+router.put("/employee/:id",upload.single("photo"), updateEmployee)
+router.post('/employee', upload.single("photo"), createEmployee);
 router.delete("/employee/:id", deleteEmployee);
 
 //attendance Routes

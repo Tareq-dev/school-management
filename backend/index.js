@@ -3,10 +3,18 @@ import cors from "cors";
 import dotenv from "dotenv";
 import routes from "./routes/routes.js";
 
-dotenv.config();
-
 const app = express();
+
+dotenv.config();
+// Middleware to parse JSON bodies
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const port = process.env.PORT || 8000;
+
+
+
+
 app.use('/uploads', express.static('public/uploads'));
 
 app.get("/", (req, res) => {

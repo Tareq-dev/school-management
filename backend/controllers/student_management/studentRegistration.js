@@ -91,60 +91,6 @@ export const createStudentRegistration = async (req, res) => {
   }
 }
 
-// Update Student API
-// export const updateStudentRegistration = (req, res) => {
-//   const id = req.params.id;
-
-//   // আগে পুরানো ডাটা আনবো
-//   const selectSql = `SELECT * FROM students_registration WHERE id = ?`;
-//   db.query(selectSql, [id], (err, results) => {
-//     if (err) {
-//       console.error('Error fetching student:', err);
-//       return res.status(500).send('Server error');
-//     }
-//     if (results.length === 0) {
-//       return res.status(404).send('Student not found');
-//     }
-
-//     const oldData = results[0];
-
-//     const {
-//       student_id = oldData.student_id,
-//       name = oldData.name,
-//       class: studentClass = oldData.class,
-//       roll = oldData.roll,
-//       gender = oldData.gender,
-//       birth_date = oldData.birth_date,
-//       phone = oldData.phone,
-//       email = oldData.email,
-//       address = oldData.address,
-//       guardian_name = oldData.guardian_name,
-//       guardian_phone = oldData.guardian_phone,
-//       photo = oldData.photo,
-//       session = oldData.session,
-//       shift = oldData.shift,
-//       discounts = oldData.discounts
-//     } = req.body;
-
-//     // // Update
-//     const updateSql = `UPDATE students_registration SET
-//       student_id = ?, name = ?, class = ?, roll = ?, gender = ?, birth_date = ?, 
-//       phone = ?, email = ?, address = ?, guardian_name = ?, guardian_phone = ?, photo = ?, session =?, shift=? , discounts = ? 
-//       WHERE id = ?`;
-
-//     db.query(updateSql, [
-//       student_id, name, studentClass, roll, gender, birth_date,
-//       phone, email, address, guardian_name, guardian_phone, photo, id, session, shift, discounts
-//     ], (err, result) => {
-//       if (err) {
-//         console.error('Error updating student:', err);
-//         return res.status(500).send('Server error');
-//       }
-//       res.send({ message: 'Student updated successfully!' });
-//     });
-
-//   });
-// }
 
 export const updateStudentRegistration = async (req, res) => {
   const id = req.params.id;
@@ -186,7 +132,7 @@ export const updateStudentRegistration = async (req, res) => {
 
         // পুরানো ছবি ফাইল ডিলিট
         const oldPhotoPath = path.resolve('public/uploads/students_photo', oldData.photo);
-        
+
         if (fs.existsSync(oldPhotoPath)) {
           fs.unlinkSync(oldPhotoPath);
         }
@@ -203,8 +149,7 @@ export const updateStudentRegistration = async (req, res) => {
           .resize({ width: 800 })
           .jpeg({ quality: 70 })
           .toFile(uploadPath);
-
-        photo = fileName;
+           photo = fileName;
       }
 
       // Update query
