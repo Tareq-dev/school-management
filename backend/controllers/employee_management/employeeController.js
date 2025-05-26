@@ -1,31 +1,31 @@
-import db from "../config/db.js";
+import db from "../../config/db.js";
 
-export const getAllteachers = (req, res) => {
-    const query = "SELECT * FROM teachers";
+export const getAllEmployees = (req, res) => {
+    const query = "SELECT * FROM employees";
     db.query(query, (err, results) => {
         if (err) {
-            console.error("Error fetching teachers:", err);
+            console.error("Error fetching employees:", err);
             return res.status(500).json({ success: false, message: "DB Error" });
         }
         res.status(200).json({ success: true, data: results });
     });
 };
-export const getTeacherById = (req, res) => {
+export const getEmployeeById = (req, res) => {
     const { id } = req.params;
-    const query = "SELECT * FROM teachers WHERE id = ?";
+    const query = "SELECT * FROM employees WHERE id = ?";
     db.query(query, [id], (err, results) => {
         if (err) {
-            console.error("Error fetching Teacher:", err);
+            console.error("Error fetching employee:", err);
             return res.status(500).json({ success: false, message: "DB Error" });
         }
         if (results.length === 0) {
-            return res.status(404).json({ success: false, message: "Teacher not found" });
+            return res.status(404).json({ success: false, message: "Employee not found" });
         }
         res.status(200).json({ success: true, data: results[0] });
     });
 };
 // // Add Student API
-export const createTeacher = (req, res) => {
+export const createEmployee = (req, res) => {
     const {
         teacher_id, name, designation, subject, email, phone, gender, address, joining_date, photo
     } = req.body;
@@ -56,7 +56,7 @@ export const createTeacher = (req, res) => {
 }
 // // Update Student API
 
-export const updateTeacher = (req, res) => {
+export const updateEmployee = (req, res) => {
   const id = req.params.id;
 
   const selectSql = `SELECT * FROM teachers WHERE id = ?`;
@@ -102,7 +102,7 @@ export const updateTeacher = (req, res) => {
   });
 };
 // // Delete Student
-export const deleteTeacher =(req, res)=>{
+export const deleteEmployee =(req, res)=>{
   const sql = `DELETE FROM teachers WHERE id = ?`;
   db.query(sql, [req.params.id], (err, result) => {
     if (err) {

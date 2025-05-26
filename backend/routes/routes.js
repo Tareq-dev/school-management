@@ -1,5 +1,5 @@
 import express from "express";
-import { createTeacher, deleteTeacher, getAllteachers, getTeacherById, updateTeacher } from "../controllers/teacherRoutes.js";
+import { createEmployee, deleteEmployee, getAllEmployees, getEmployeeById, updateEmployee } from "../controllers/employee_management/employeeController.js";
 import { attendanceData, getAllAttendance, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, updateAttendance } from "../controllers/attendanceRoute.js";
 import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
 import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_controllers/sessionController.js";
@@ -12,7 +12,7 @@ import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, upda
 import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_controllers/subjectAssignController.js";
 import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegistrations, getStudentRegistrationById, updateStudentRegistration } from "../controllers/student_management/studentRegistration.js";
 import { assignRolls, getStudentsForRoll } from "../controllers/student_management/roll_generate.js";
-import { generateRegistrationSlip,  getStudentsDataForFees } from "../controllers/student_management/registration_fee.js";
+import {  generateSlip,  getStudentsDataForFees } from "../controllers/student_management/generate_fee_slip.js";
 import { upload } from "../config/upload.js";
 
 const router = express.Router();
@@ -90,16 +90,17 @@ router.delete('/student/:id', deleteStudentRegistration);
 router.get('/roll-generate',getStudentsForRoll)
 router.post('/roll-assign',assignRolls)
 
-//Registration Fees
+//Generate Fees and Slip
 router.get('/get-fee',getStudentsDataForFees)
-router.get('/registration-fee-slip/:id',generateRegistrationSlip)
+router.get('/generate-slip/:id',generateSlip)
 
+ 
 //teachers Routes
-router.get("/teachers", getAllteachers)
-router.get("/teacher/:id", getTeacherById)
-router.put("/teacher/:id", updateTeacher)
-router.post('/teacher', createTeacher);
-router.delete("/teacher/:id", deleteTeacher);
+router.get("/employees", getAllEmployees)
+router.get("/employee/:id", getEmployeeById)
+router.put("/employee/:id", updateEmployee)
+router.post('/employee', createEmployee);
+router.delete("/employee/:id", deleteEmployee);
 
 //attendance Routes
 router.get('/attendance', getAttendanceDataByDate); //http://localhost:8000/api/attendance?className=Class 4&date=2025-05-21
