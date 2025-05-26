@@ -2,7 +2,7 @@ import db from "../../config/db.js";
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 
-export const getStudentsDataForFees = (req, res) => {
+export const getRegistrationFees = (req, res) => {
   const { class: class_id, feeCategory } = req.query;
 
   if (!feeCategory || !class_id) {
@@ -17,43 +17,29 @@ export const getStudentsDataForFees = (req, res) => {
     if (feeResult.length === 0) return res.status(404).json({ success: false, message: "Fee not set" });
 
     const feeAmount = feeResult[0].amount;
+    // 2. Get students list
+    const studentQuery = `SELECT id, student_id, name, roll,gender,email,guardian_name , discounts FROM students_registration WHERE class = ? ORDER BY roll`;
 
-    // 2. Get fee category name from fee_categories table
-    const categoryQuery = `SELECT name FROM fee_categories WHERE id = ?`;
+    db.query(studentQuery, [class_id], (stuErr, stuResults) => {
+      if (stuErr) return res.status(500).json({ success: false, message: "DB error on student fetch" });
+      // 3. Prepare data with discounted fee
+      const finalData = stuResults.map(student => {
+        const discount = student.discounts || 0;
+        const payable = feeAmount - (feeAmount * discount) / 100;
 
-    db.query(categoryQuery, [feeCategory], (catErr, catResult) => {
-      if (catErr) return res.status(500).json({ success: false, message: "DB error on category fetch" });
-      if (catResult.length === 0) return res.status(404).json({ success: false, message: "Fee Category not found" });
-
-      const fee_name = catResult[0].name;
-
-      // 3. Get students list
-      const studentQuery = `SELECT id, student_id, name, roll, gender, email, guardian_name, discounts FROM students_registration WHERE class = ? ORDER BY roll`;
-
-      db.query(studentQuery, [class_id], (stuErr, stuResults) => {
-        if (stuErr) return res.status(500).json({ success: false, message: "DB error on student fetch" });
-
-        // 4. Prepare data with discounted fee
-        const finalData = stuResults.map(student => {
-          const discount = student.discounts || 0;
-          const payable = feeAmount - (feeAmount * discount) / 100;
-
-          return {
-            ...student,
-            feeAmount,
-            discount,
-            payable,
-            fee_name  // এইবার ডেটাবেস থেকে আনা নাম এখানে
-          };
-        });
-
-        // 5. Send response
-        res.status(200).json({ success: true, data: finalData });
+        return {
+          ...student,
+          feeAmount,
+          discount,
+          payable
+        };
       });
+
+      // 4. Send response
+      res.status(200).json({ success: true, data: finalData });
     });
   });
 };
-
 
 export const generateRegistrationSlip = (req, res) => {
   const { id: studentId } = req.params;

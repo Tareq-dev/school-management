@@ -11,9 +11,9 @@ import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_Categot
 import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, updateFeeAmount } from "../controllers/setup_controllers/feeAmountController.js";
 import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_controllers/subjectAssignController.js";
 import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegistrations, getStudentRegistrationById, updateStudentRegistration } from "../controllers/student_management/studentRegistration.js";
-import { upload } from "../config/upload.js";
 import { assignRolls, getStudentsForRoll } from "../controllers/student_management/roll_generate.js";
-import { generateRegistrationSlip, getRegistrationFees } from "../controllers/student_management/registration_fee.js";
+import { generateRegistrationSlip,  getStudentsDataForFees } from "../controllers/student_management/registration_fee.js";
+import { upload } from "../config/upload.js";
 
 const router = express.Router();
 
@@ -91,7 +91,7 @@ router.get('/roll-generate',getStudentsForRoll)
 router.post('/roll-assign',assignRolls)
 
 //Registration Fees
-router.get('/registration-fee',getRegistrationFees)
+router.get('/get-fee',getStudentsDataForFees)
 router.get('/registration-fee-slip/:id',generateRegistrationSlip)
 
 //teachers Routes
