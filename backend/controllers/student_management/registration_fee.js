@@ -1,8 +1,10 @@
 import db from "../../config/db.js";
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
 
 export const getRegistrationFees = (req, res) => {
     const { class: class_id, feeCategory } = req.query;
-   
+
     if (!feeCategory || !class_id) {
         return res.status(400).json({ success: false, message: "fee Category and Class are required" });
     }
@@ -16,7 +18,7 @@ export const getRegistrationFees = (req, res) => {
 
         const feeAmount = feeResult[0].amount;
         // 2. Get students list
-        const studentQuery = `SELECT id, student_id, name, roll, discounts FROM students_registration WHERE class = ? ORDER BY roll`;
+        const studentQuery = `SELECT id, student_id, name, roll,gender,email,guardian_name , discounts FROM students_registration WHERE class = ? ORDER BY roll`;
 
         db.query(studentQuery, [class_id], (stuErr, stuResults) => {
             if (stuErr) return res.status(500).json({ success: false, message: "DB error on student fetch" });
@@ -38,3 +40,185 @@ export const getRegistrationFees = (req, res) => {
         });
     });
 };
+
+export const generateRegistrationSlip = (req, res) => {
+    const { id: studentId } = req.params;
+    const { feeCategory } = req.query;
+
+    if (!feeCategory) {
+        return res.status(400).json({ success: false, message: "Fee Category is required" });
+    }
+
+    const query = `
+    SELECT s.name, s.student_id, s.roll, s.discounts, f.amount AS fee_amount
+    FROM students_registration s
+    JOIN fee_amount f ON s.class = f.class_id
+    WHERE s.id = ? AND f.fee_category_id = ?
+    LIMIT 1
+  `;
+
+    db.query(query, [studentId, feeCategory], (err, result) => {
+        if (err) return res.status(500).json({ success: false, message: "DB Error" });
+        if (result.length === 0) return res.status(404).json({ success: false, message: "Data not found" });
+
+        const student = result[0];
+        const payable = student.fee_amount - (student.fee_amount * (student.discounts || 0)) / 100;
+
+        // Generate PDF Slip
+        const doc = new PDFDocument({ size: 'A4', margin: 50 });
+        const filePath = `./public/slips/registration-slip-${student.student_id}.pdf`;
+        doc.pipe(fs.createWriteStream(filePath));
+        // const schoolName = "Bright Future Academy";
+        // const schoolAddress = "123, Education Road, Dhaka, Bangladesh";
+       function drawCopy(startY, copyTitle) {
+  // Header
+  doc
+    .fontSize(14)
+    .font('Helvetica-Bold')
+    .fillColor('#003366')
+    .text('Bright Future Academy', 40, startY, { align: 'center', width: 510 })
+    .fontSize(11)
+    .fillColor('#000')
+    .text('123, Education Road, Dhaka, Bangladesh', 40, startY + 18, { align: 'center', width: 510 });
+
+  doc
+    .moveTo(40, startY + 45)
+    .lineTo(550, startY + 45)
+    .lineWidth(1)
+    .strokeColor('#004080')
+    .stroke();
+
+  doc
+    .fontSize(11)
+    .fillColor('#004080')
+    .font('Helvetica-Bold')
+    .text(`${copyTitle}`, 40, startY + 50, { align: 'center' });
+
+  let tableY = startY + 80;
+  const startX = 50;
+  const colWidths = [200, 290];  // দুই কলাম: Field & Details
+  const tableWidth = colWidths.reduce((a, b) => a + b, 0);
+  const rowHeight = 20;
+
+  // Table Header Background
+  doc
+    .rect(startX, tableY, tableWidth, rowHeight)
+    .fillColor('#cce0ff')
+    .fill()
+    .strokeColor('#004080')
+    .lineWidth(0.8)
+    .stroke();
+
+  // Draw vertical column lines (header)
+  let colX = startX;
+  colWidths.forEach((width) => {
+    doc
+      .moveTo(colX, tableY)
+      .lineTo(colX, tableY + rowHeight)
+      .stroke();
+    colX += width;
+  });
+  doc
+    .moveTo(startX + tableWidth, tableY)
+    .lineTo(startX + tableWidth, tableY + rowHeight)
+    .stroke();
+
+  // Header Text
+  const headers = ['Field', 'Details'];
+  colX = startX;
+  headers.forEach((header, index) => {
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(9)
+      .fillColor('#003366')
+      .text(header, colX + 6, tableY + 5);
+    colX += colWidths[index];
+  });
+
+  tableY += rowHeight;
+
+  // Data Rows (remark বাদ)
+  const dataRows = [
+    ['Name', student.name],
+    ['Student ID', student.student_id],
+    ['Roll', student.roll],
+    ['Class', student.class],
+    ['Session', student.session],
+    ['Shift', student.shift],
+    ['Registration Fee', `${student.fee_amount} Tk`],
+    ['Discount', `${student.discounts}%`],
+    ['Payable Amount', `${payable.toFixed(2)} Tk`],
+  ];
+
+  dataRows.forEach(([field, details], i) => {
+    // Alternate row color
+    if (i % 2 === 0) {
+      doc
+        .rect(startX, tableY, tableWidth, rowHeight)
+        .fillColor('#f9f9f9')
+        .fill();
+    }
+
+    // Row border (full row rectangle)
+    doc
+      .strokeColor('#cccccc')
+      .lineWidth(0.5)
+      .rect(startX, tableY, tableWidth, rowHeight)
+      .stroke();
+
+    // Vertical column lines inside row
+    colX = startX;
+    colWidths.forEach((width) => {
+      doc
+        .moveTo(colX, tableY)
+        .lineTo(colX, tableY + rowHeight)
+        .stroke();
+      colX += width;
+    });
+    doc
+      .moveTo(startX + tableWidth, tableY)
+      .lineTo(startX + tableWidth, tableY + rowHeight)
+      .stroke();
+
+    // Texts
+    colX = startX;
+    [field, details].forEach((text, j) => {
+      doc
+        .font('Helvetica')
+        .fontSize(9)
+        .fillColor('#000')
+        .text(text, colX + 6, tableY + 5, { width: colWidths[j] - 12 });
+      colX += colWidths[j];
+    });
+
+    tableY += rowHeight;
+  });
+
+  // Footer
+  doc
+    .fontSize(8)
+    .fillColor('#555555')
+    .text('Note: This slip is computer generated and does not require a signature.', startX, tableY + 8, { width: tableWidth, align: 'center' })
+    .text(`Generated on: ${new Date().toLocaleDateString()}`, startX, tableY + 20, { width: tableWidth, align: 'center' });
+}
+
+// Draw Both Copies
+drawCopy(40, 'Student Copy');
+
+doc
+  .moveTo(40, 400)
+  .lineTo(550, 400)
+  .lineWidth(0.5)
+  .dash(3, { space: 3 })
+  .strokeColor('#004080')
+  .stroke();
+
+drawCopy(420, 'School Copy');
+
+doc.end();
+
+        res.status(200).json({ success: true, message: "Slip generated", file: filePath });
+    });
+};
+
+
