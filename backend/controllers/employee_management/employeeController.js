@@ -186,3 +186,68 @@ export const deleteEmployee = (req, res) => {
     }
   });
 }
+
+
+
+
+
+
+
+
+
+
+export const getEmployeeDetails = (req, res) => {
+  const query = `
+    SELECT id, employee_id, name, designation, joining_salary, salary, joining_date
+    FROM employees
+    ORDER BY name
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).json({ success: false, message: "DB error on fetching employees." });
+
+    res.status(200).json({ success: true, data: results });
+  });
+};
+export const addSalaryIncrement = (req, res) => {
+  const { id, increment_amount } = req.body;
+
+
+  if (!id || !increment_amount) {
+    return res.status(400).json({ success: false, message: "Employee ID and Increment Amount are required." });
+  }
+
+  // 1. Get current salary
+  const getSalaryQuery = `SELECT salary FROM employees WHERE id = ?`;
+
+  db.query(getSalaryQuery, [id], (err, result) => {
+    if (err) return res.status(500).json({ success: false, message: "DB Error fetching salary" });
+    if (result.length === 0) return res.status(404).json({ success: false, message: "Employee not found" });
+
+    const previousSalary = result[0].current_salary;
+    const newSalary = (parseFloat(previousSalary) + parseFloat(increment_amount)).toFixed(2);
+
+    // 2. Insert increment record
+    const insertIncrementQuery = `
+      INSERT INTO salary_increments (employee_id, previous_salary, increment_amount, new_salary, increment_date)
+      VALUES (?, ?, ?, ?, CURDATE())
+    `;
+
+    db.query(
+      insertIncrementQuery,
+      [employee_id, previousSalary, increment_amount, newSalary],
+      (insertErr, insertResult) => {
+        if (insertErr) return res.status(500).json({ success: false, message: "DB Error on increment insert" });
+
+        // 3. Update employee's current salary
+        const updateSalaryQuery = `UPDATE employees SET current_salary = ? WHERE id = ?`;
+
+        db.query(updateSalaryQuery, [newSalary, employee_id], (updateErr) => {
+          if (updateErr) return res.status(500).json({ success: false, message: "DB Error updating salary" });
+
+          res.status(200).json({ success: true, message: "Salary incremented successfully." });
+        });
+      }
+    );
+  });
+};

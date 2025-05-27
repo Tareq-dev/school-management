@@ -1,5 +1,5 @@
 import express from "express";
-import { createEmployee, deleteEmployee, getAllEmployees, getEmployeeById, updateEmployee } from "../controllers/employee_management/employeeController.js";
+import { addSalaryIncrement, createEmployee, deleteEmployee, getAllEmployees, getEmployeeById, getEmployeeDetails, updateEmployee } from "../controllers/employee_management/employeeController.js";
 import { attendanceData, getAllAttendance, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, updateAttendance } from "../controllers/attendanceRoute.js";
 import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
 import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_controllers/sessionController.js";
@@ -109,11 +109,9 @@ router.get('/all-attendance', getAllAttendance);
 router.post('/attendance', attendanceData);
 router.put('/attendance/:id', updateAttendance); //PUT http://localhost:8000/api/attendance/1
 
-
-
 // router.get('/attendance/yearly', getAttendanceDataByYear); //GET http://localhost:5000/api/attendance/yearly?className=Class 5&year=2025
 
-
-
+router.get('/get-employee-details', getEmployeeDetails);
+router.post('/increment-employee', addSalaryIncrement);
 
 export default router;
