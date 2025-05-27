@@ -223,11 +223,17 @@ export const addSalaryIncrement = (req, res) => {
   db.query(getSalaryQuery, [id], (err, result) => {
     if (err) return res.status(500).json({ success: false, message: "DB Error fetching salary" });
     if (result.length === 0) return res.status(404).json({ success: false, message: "Employee not found" });
+    const previousSalary = result[0].salary;
 
-    const previousSalary = result[0].current_salary;
+
     const newSalary = (parseFloat(previousSalary) + parseFloat(increment_amount)).toFixed(2);
-
     // 2. Insert increment record
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
+
+    const formattedDate = `${dd}-${mm}-${yyyy}`
     const insertIncrementQuery = `
       INSERT INTO salary_increments (employee_id, previous_salary, increment_amount, new_salary, increment_date)
       VALUES (?, ?, ?, ?, CURDATE())
@@ -235,14 +241,14 @@ export const addSalaryIncrement = (req, res) => {
 
     db.query(
       insertIncrementQuery,
-      [employee_id, previousSalary, increment_amount, newSalary],
+      [id, previousSalary, increment_amount, newSalary, formattedDate],
       (insertErr, insertResult) => {
         if (insertErr) return res.status(500).json({ success: false, message: "DB Error on increment insert" });
 
         // 3. Update employee's current salary
-        const updateSalaryQuery = `UPDATE employees SET current_salary = ? WHERE id = ?`;
+        const updateSalaryQuery = `UPDATE employees SET salary = ? WHERE id = ?`;
 
-        db.query(updateSalaryQuery, [newSalary, employee_id], (updateErr) => {
+        db.query(updateSalaryQuery, [newSalary, id], (updateErr) => {
           if (updateErr) return res.status(500).json({ success: false, message: "DB Error updating salary" });
 
           res.status(200).json({ success: true, message: "Salary incremented successfully." });

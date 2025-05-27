@@ -111,7 +111,11 @@ router.put('/attendance/:id', updateAttendance); //PUT http://localhost:8000/api
 
 // router.get('/attendance/yearly', getAttendanceDataByYear); //GET http://localhost:5000/api/attendance/yearly?className=Class 5&year=2025
 
+
+// API: http://localhost:8000/v1/api/get-employee-details
 router.get('/get-employee-details', getEmployeeDetails);
+
+//API: http://localhost:8000/v1/api/increment-employee
 router.post('/increment-employee', addSalaryIncrement);
 
 export default router;
