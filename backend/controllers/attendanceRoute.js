@@ -2,21 +2,38 @@ import db from "../config/db.js";
 
 //Post
 export const attendanceData = (req, res) => {
-  const { attendance_date, class: classNum, attendanceList } = req.body;
+  const { attendance_date, type, class: classNum, attendanceList } = req.body;
 
-  if (!attendance_date || !attendanceList.length) {
-    return res.status(400).json({ message: "attendance_date আর attendanceList দিতে হবে।" });
+   if (!attendance_date || !attendanceList.length || !type) {
+    return res.status(400).json({ message: "attendance_date, type আর attendanceList দিতে হবে।" });
   }
 
-  const values = attendanceList.map(item => [
-    item.student_id,
-    classNum,
-    item.roll,
-    attendance_date,
-    item.status
-  ]);
+  let insertSql = "";
+  let values = [];
 
-  const insertSql = `INSERT INTO attendance (student_id, class, roll, attendance_date, status) VALUES ?`;
+  if (type === 'student') {
+    insertSql = `INSERT INTO students_attendance (student_id, class, roll, attendance_date, status) VALUES ?`;
+
+    values = attendanceList.map(item => [
+      item.id,
+      classNum,
+      item.roll,
+      attendance_date,
+      item.status
+    ]);
+
+  } else if (type === 'employee') {
+    insertSql = `INSERT INTO employees_attendance (employee_id, attendance_date, status) VALUES ?`;
+
+    values = attendanceList.map(item => [
+      item.id,
+      attendance_date,
+      item.status
+    ]);
+
+  } else {
+    return res.status(400).json({ message: "Invalid type. Must be 'student' or 'employee'." });
+  }
 
   db.query(insertSql, [values], (err, result) => {
     if (err) {
@@ -24,8 +41,29 @@ export const attendanceData = (req, res) => {
       return res.status(500).json({ message: 'Server error' });
     }
 
-    res.json({ message: 'Attendance submitted successfully!', inserted: result.affectedRows });
+    res.json({
+      message: `${type} attendance submitted successfully!`,
+      inserted: result.affectedRows
+    });
   });
+  // const values = attendanceList.map(item => [
+  //   item.student_id,
+  //   classNum,
+  //   item.roll,
+  //   attendance_date,
+  //   item.status
+  // ]);
+
+  // const insertSql = `INSERT INTO attendance (student_id, class, roll, attendance_date, status) VALUES ?`;
+
+  // db.query(insertSql, [values], (err, result) => {
+  //   if (err) {
+  //     console.error('Error inserting attendance:', err);
+  //     return res.status(500).json({ message: 'Server error' });
+  //   }
+
+  //   res.json({ message: 'Attendance submitted successfully!', inserted: result.affectedRows });
+  // });
 };
 //Update Single attendance
 export const updateAttendance = (req, res) => {
