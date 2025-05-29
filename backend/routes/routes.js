@@ -14,7 +14,7 @@ import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegi
 import { assignRolls, getStudentsForRoll } from "../controllers/student_management/roll_generate.js";
 import { generateSlip, getStudentsDataForFees } from "../controllers/student_management/generate_fee_slip.js";
 import { upload } from "../config/upload.js";
-import { getStudentListForMarkEntry, insertMarks } from "../controllers/marks_controller/marks_controller.js";
+import { getStudentListForMarkEntry, insertMarks, updateMark } from "../controllers/marks_controller/marks_controller.js";
 
 const router = express.Router();
 
@@ -119,11 +119,10 @@ router.get('/get-employee-details', getEmployeeDetails);
 router.post('/increment-employee', addSalaryIncrement);
 
 
-
-
-
 router.get("/marks/list", getStudentListForMarkEntry);
 router.post("/marks/entry", insertMarks);
+router.put("/marks/update", updateMark);
+
 
 
 
