@@ -1,4 +1,4 @@
-import db from "../config/db.js";
+import db from "../../config/db.js";
 
 //Post
 
@@ -321,10 +321,6 @@ export const getSinglePersonMonthlyListAndSummary = (req, res) => {
   });
 };
 
-
-
-
-
 export const getAttendanceDataByYear = (req, res) => {
   const { year } = req.query;
 
@@ -349,27 +345,3 @@ export const getAttendanceDataByYear = (req, res) => {
 
 
 };
-
-
-
-
-
-
-// export const getAllAttendance = (req, res) => {
-//   const sql = `SELECT * FROM attendance`;
-
-//   db.query(sql, (err, result) => {
-//     if (err) {
-//       console.error('Error fetching attendance:', err);
-//       return res.status(500).json({ message: 'Server error' });
-//     }
-
-//     if (result.length > 0) {
-//       res.json(result);
-//     } else {
-//       return res.status(404).json({
-//         message: "Attendance data পাওয়া যায়নি।"
-//       });
-//     }
-//   });
-// };

@@ -1,6 +1,6 @@
 import express from "express";
 import { addSalaryIncrement, createEmployee, deleteEmployee, getAllEmployees, getEmployeeById, getEmployeeDetails, updateEmployee } from "../controllers/employee_management/employeeController.js";
-import { attendanceData, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, getSinglePersonMonthlyListAndSummary, updateAttendance } from "../controllers/attendanceRoute.js";
+import { attendanceData, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, getSinglePersonMonthlyListAndSummary, updateAttendance } from "../controllers/attendance_management/attendance_controller.js";
 import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
 import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_controllers/sessionController.js";
 import { addGroup, deleteGroup, getAllGroup, getGroupById, updateGroup } from "../controllers/setup_controllers/groupController.js";
@@ -14,6 +14,7 @@ import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegi
 import { assignRolls, getStudentsForRoll } from "../controllers/student_management/roll_generate.js";
 import { generateSlip, getStudentsDataForFees } from "../controllers/student_management/generate_fee_slip.js";
 import { upload } from "../config/upload.js";
+import { getStudentListForMarkEntry, insertMarks } from "../controllers/marks_controller/marks_controller.js";
 
 const router = express.Router();
 
@@ -116,5 +117,16 @@ router.get('/get-employee-details', getEmployeeDetails);
 
 //API: http://localhost:8000/v1/api/increment-employee
 router.post('/increment-employee', addSalaryIncrement);
+
+
+
+
+
+router.get("/marks/list", getStudentListForMarkEntry);
+router.post("/marks/entry", insertMarks);
+
+
+
+
 
 export default router;
