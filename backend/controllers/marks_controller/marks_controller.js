@@ -152,3 +152,78 @@ export const updateMark = (req, res) => {
     });
 };
 
+// {
+//   "student_id": "STU001",
+//   "class": 1,
+//   "group": "Science",
+//   "shift": "morning",
+//   "session": "2024",
+//   "subject": "Bangla",
+//   "exam_type": "1st Term",
+//   "mark": 89
+// }
+
+export const deleteMark = (req, res) => {
+    const { student_id, class: classId, group, shift, session, subject, exam_type } = req.body;
+
+    // Input validation
+    if (!student_id) return res.status(400).json({ message: "Student ID দিতে হবে।" });
+    if (!classId) return res.status(400).json({ message: "Class দিতে হবে।" });
+    if (!shift) return res.status(400).json({ message: "Shift দিতে হবে।" });
+    if (!session) return res.status(400).json({ message: "Session দিতে হবে।" });
+    if (!subject) return res.status(400).json({ message: "Subject দিতে হবে।" });
+    if (!exam_type) return res.status(400).json({ message: "Exam Type দিতে হবে।" });
+    if ((classId == 9 || classId == 10) && !group) {
+        return res.status(400).json({ message: "Class 9-10 এর জন্য group দিতে হবে।" });
+    }
+
+// Check if data exists first
+    const checkSql = `
+        SELECT * FROM marks
+        WHERE student_id = ? 
+        AND class = ?
+        AND shift = ?
+        AND session = ?
+        AND subject = ?
+        AND exam_type = ?
+        ${ (classId == 9 || classId == 10) ? 'AND \`group\` = ?' : ''}
+    `;
+
+    const checkValues = (classId == 9 || classId == 10)
+        ? [student_id, classId, shift, session, subject, exam_type, group]
+        : [student_id, classId, shift, session, subject, exam_type];
+
+    db.query(checkSql, checkValues, (err, rows) => {
+        if (err) {
+            console.error('Error checking mark:', err);
+            return res.status(500).send('Server error');
+        }
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "এই তথ্যের কোনো মার্ক পাওয়া যায়নি।" });
+        }
+
+        // Data exists, proceed to delete
+        const deleteSql = `
+            DELETE FROM marks 
+            WHERE student_id = ? 
+            AND class = ? 
+            AND shift = ? 
+            AND session = ? 
+            AND subject = ? 
+            AND exam_type = ?
+            ${ (classId == 9 || classId == 10) ? 'AND \`group\` = ?' : ''}
+        `;
+
+        const deleteValues = checkValues;
+
+        db.query(deleteSql, deleteValues, (err, result) => {
+            if (err) {
+                console.error('Error deleting mark:', err);
+                return res.status(500).send('Server error');
+            }
+            res.json({ message: "Mark ডিলিট করা হয়েছে।" });
+        });
+    });
+};
+
