@@ -1,20 +1,21 @@
 import express from "express";
 import { addSalaryIncrement, createEmployee, deleteEmployee, getAllEmployees, getEmployeeById, getEmployeeDetails, updateEmployee } from "../controllers/employee_management/employeeController.js";
 import { attendanceData, getAttendanceDataByDate, getAttendanceDataByMonth, getAttendanceDataByYear, getSinglePersonMonthlyListAndSummary, updateAttendance } from "../controllers/attendance_management/attendance_controller.js";
-import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_controllers/classController.js";
-import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_controllers/sessionController.js";
-import { addGroup, deleteGroup, getAllGroup, getGroupById, updateGroup } from "../controllers/setup_controllers/groupController.js";
-import { addExam, deleteExam, getAllExam, getExamById, updateExam } from "../controllers/setup_controllers/examTypeController.js";
-import { addShift, deleteShift, getAllShift, getShiftById, updateShift } from "../controllers/setup_controllers/shiftController.js";
-import { addSubject, deleteSubject, getAllSubject, getSubjectById, updateSubject } from "../controllers/setup_controllers/subjectController.js";
-import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_CategotyById, updateFee_Categoty } from "../controllers/setup_controllers/feeCategoryController.js";
-import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, updateFeeAmount } from "../controllers/setup_controllers/feeAmountController.js";
-import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_controllers/subjectAssignController.js";
+import { getAllClasses, getClassById, addClass, updateClass, deleteClass } from "../controllers/setup_management/classController.js";
+import { addSession, deleteSession, getAllSession, getSessionById, updateSession } from "../controllers/setup_management/sessionController.js";
+import { addGroup, deleteGroup, getAllGroup, getGroupById, updateGroup } from "../controllers/setup_management/groupController.js";
+import { addExam, deleteExam, getAllExam, getExamById, updateExam } from "../controllers/setup_management/examTypeController.js";
+import { addShift, deleteShift, getAllShift, getShiftById, updateShift } from "../controllers/setup_management/shiftController.js";
+import { addSubject, deleteSubject, getAllSubject, getSubjectById, updateSubject } from "../controllers/setup_management/subjectController.js";
+import { addFee_Categoty, deleteFee_Categoty, getAllFee_Categoty, getFee_CategotyById, updateFee_Categoty } from "../controllers/setup_management/feeCategoryController.js";
+import { createFeeAmount, deleteFeeAmount, getFeeAmountById, getFeeAmounts, updateFeeAmount } from "../controllers/setup_management/feeAmountController.js";
+import { assignSubject, getAllAssignments, updateAssignment } from "../controllers/setup_management/subjectAssignController.js";
 import { createStudentRegistration, deleteStudentRegistration, getAllStudentRegistrations, getStudentRegistrationById, updateStudentRegistration } from "../controllers/student_management/studentRegistration.js";
 import { assignRolls, getStudentsForRoll } from "../controllers/student_management/roll_generate.js";
 import { generateSlip, getStudentsDataForFees } from "../controllers/student_management/generate_fee_slip.js";
 import { upload } from "../config/upload.js";
-import { deleteMark, getStudentListForMarkEntry, insertMarks, updateMark } from "../controllers/marks_controller/marks_controller.js";
+import { deleteMark, getStudentListForMarkEntry, insertMarks, updateMark } from "../controllers/marks_management/marks_controller.js";
+import { getStudentsDataForFeesManagement } from "../controllers/acount_management/student_fee.js";
 
 const router = express.Router();
 
@@ -124,8 +125,9 @@ router.post("/marks/entry", insertMarks);
 router.put("/marks/update", updateMark);
 router.delete("/marks/delete", deleteMark);
 
-
-
+ 
+router.get("/get-fee-data", getStudentsDataForFeesManagement);
+ 
 
 
 
