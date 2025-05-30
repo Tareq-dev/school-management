@@ -125,9 +125,6 @@ router.post("/marks/entry", insertMarks);
 router.put("/marks/update", updateMark);
 router.delete("/marks/delete", deleteMark);
 
- 
-router.get("/get-fee-data", getStudentsDataForFeesManagement);
- 
 
 
 
