@@ -15,7 +15,6 @@ import { assignRolls, getStudentsForRoll } from "../controllers/student_manageme
 import { generateSlip, getStudentsDataForFees } from "../controllers/student_management/generate_fee_slip.js";
 import { upload } from "../config/upload.js";
 import { deleteMark, getStudentListForMarkEntry, insertMarks, updateMark } from "../controllers/marks_management/marks_controller.js";
-import { getStudentsDataForFeesManagement } from "../controllers/acount_management/student_fee.js";
 
 const router = express.Router();
 
