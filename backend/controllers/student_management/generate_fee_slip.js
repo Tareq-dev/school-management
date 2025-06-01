@@ -5,9 +5,8 @@ import fs from 'fs';
 // API: http://localhost:8000/v1/api/get-fee?class=7&feeCategory=1
 
 export const getStudentsDataForFees = (req, res) => {
-    const { class: class_id, feeCategory } = req.query;
-
-    if (!feeCategory || !class_id) {
+    const { session, class: class_id, feeCategory } = req.query;
+    if (!session || !feeCategory || !class_id) {
         return res.status(400).json({ success: false, message: "fee Category and Class are required" });
     }
 
@@ -30,28 +29,26 @@ export const getStudentsDataForFees = (req, res) => {
             const fee_name = catResult[0].name;
 
             // 3. Get students list
-            const studentQuery = `SELECT id, student_id, name, roll, gender, email, guardian_name, discounts FROM students_registration WHERE class = ? ORDER BY roll`;
+           const studentQuery = `SELECT id, student_id, session, name, roll, gender, email, guardian_name, discounts FROM students_registration WHERE class = ? AND session = ? ORDER BY roll`;
 
-            db.query(studentQuery, [class_id], (stuErr, stuResults) => {
-                if (stuErr) return res.status(500).json({ success: false, message: "DB error on student fetch" });
+db.query(studentQuery, [class_id, session], (stuErr, stuResults) => {
+    if (stuErr) return res.status(500).json({ success: false, message: "DB error on student fetch" });
 
-                // 4. Prepare data with discounted fee
-                const finalData = stuResults.map(student => {
-                    const discount = student.discounts || 0;
-                    const payable = feeAmount - (feeAmount * discount) / 100;
+    const finalData = stuResults.map(student => {
+        const discount = student.discounts || 0;
+        const payable = feeAmount - (feeAmount * discount) / 100;
 
-                    return {
-                        ...student,
-                        feeAmount,
-                        discount,
-                        payable,
-                        fee_name  // এইবার ডেটাবেস থেকে আনা নাম এখানে
-                    };
-                });
+        return {
+            ...student,
+            feeAmount,
+            discount,
+            payable,
+            fee_name
+        };
+    });
 
-                // 5. Send response
-                res.status(200).json({ success: true, data: finalData });
-            });
+    res.status(200).json({ success: true, data: finalData });
+});
         });
     });
 };

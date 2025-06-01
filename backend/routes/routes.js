@@ -15,6 +15,7 @@ import { assignRolls, getStudentsForRoll } from "../controllers/student_manageme
 import { generateSlip, getStudentsDataForFees } from "../controllers/student_management/generate_fee_slip.js";
 import { upload } from "../config/upload.js";
 import { deleteMark, getStudentListForMarkEntry, insertMarks, updateMark } from "../controllers/marks_management/marks_controller.js";
+import { submitFees } from "../controllers/acount_management/student_fee.js";
 
 const router = express.Router();
 
@@ -124,7 +125,7 @@ router.post("/marks/entry", insertMarks);
 router.put("/marks/update", updateMark);
 router.delete("/marks/delete", deleteMark);
 
-
+router.post("/submitFees", submitFees)
 
 
 export default router;
