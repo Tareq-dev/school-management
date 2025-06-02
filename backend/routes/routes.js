@@ -16,6 +16,7 @@ import { generateSlip, getStudentsDataForFees } from "../controllers/student_man
 import { upload } from "../config/upload.js";
 import { deleteMark, getStudentListForMarkEntry, insertMarks, updateMark } from "../controllers/marks_management/marks_controller.js";
 import { submitFees } from "../controllers/acount_management/student_fee.js";
+import { getEmployeesForSalary } from "../controllers/acount_management/employee_salary.js";
 
 const router = express.Router();
 
@@ -126,6 +127,7 @@ router.put("/marks/update", updateMark);
 router.delete("/marks/delete", deleteMark);
 
 router.post("/submit-fees", submitFees)
+router.get("/employee-fees", getEmployeesForSalary)
 
 
 export default router;
