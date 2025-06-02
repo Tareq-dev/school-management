@@ -6,7 +6,7 @@ import db from "../../config/db.js";
 
  export const submitFees = (req, res) => {
   const { fees } = req.body;
-
+ 
   if (!fees || !Array.isArray(fees) || fees.length === 0) {
     return res.status(400).json({ success: false, message: "No fee data provided" });
   }

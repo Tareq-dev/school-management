@@ -125,7 +125,7 @@ router.post("/marks/entry", insertMarks);
 router.put("/marks/update", updateMark);
 router.delete("/marks/delete", deleteMark);
 
-router.post("/submitFees", submitFees)
+router.post("/submit-fees", submitFees)
 
 
 export default router;
